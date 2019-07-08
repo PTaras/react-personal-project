@@ -21,14 +21,14 @@ export default class Scheduler extends Component {
          message: '',
         };
 
-        _setTaskSpinningState = (state) => {
+    _setTaskSpinningState = (state) => {
         this.setState({
-            isTaskSpinning: state,
+        isTaskSpinning: state,
         });
     }
 
-    _createTask (message) {
-        this._setTaskSpinningState(true) 
+    _createTask = async (message) => {
+        this._setTaskSpinningState(true);
 
         const task = {
             id:          v4(),
@@ -37,19 +37,21 @@ export default class Scheduler extends Component {
             message,
         };
 
+        await delay(1200);
+
         this.setState(({ tasks }) => ({
-            tasks: [task, ...tasks],
-            isPostSpinning: false,
+            posts:          [task, ...tasks],
+            isTaskSpinning: false,
         }));
     }
 
-    _updateMessage (event) {
+    _updateMessage = (event) => {
         this.setState({
             message: event.target.value,
         });
     }
 
-    _submitMessage (event) {
+    _submitMessage = (event) => {
         event.preventDefault();
         const { message } = this.state;
 
@@ -69,7 +71,7 @@ export default class Scheduler extends Component {
         const { tasks, isTaskSpinning } = this.state;
 
         const tasksJSX = tasks.map((task) => {
-            return <Task key = { task.id } { ...task } />
+            return <Task key = { task.id } { ...tasks } />
         })
 
         return (
@@ -82,7 +84,7 @@ export default class Scheduler extends Component {
                     </header>
                     <section>
                         <form onSubmit = { this._submitMessage }>
-                            <input  onChange = { this._updateMessage }  maxLength = "50" placeholder = "Description new task" type = "text"></input>
+                            <input onChange = { this._updateMessage }  maxLength = "50" placeholder = "Description new task" type = "text"></input>
                             <button>Add task</button>
                         </form>
                         <div>
