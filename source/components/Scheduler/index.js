@@ -1,5 +1,5 @@
 // Core
-import React, { Component } from 'react';
+import React, { Component, useContext }from 'react';
 import { v4 } from 'uuid';
 import moment from 'moment';
 
@@ -27,6 +27,21 @@ export default class Scheduler extends Component {
         });
     }
 
+    _fetchTask = async () => {
+        this._setTaskSpinningState(true);
+
+        const response = await fetch(api, {
+            method: 'GET',
+        });
+
+        const { data: tasks } = await response.json();
+
+        this.setState({
+            tasks,
+            isTaskSpinning: false,
+        });
+    };
+
     _createTask = async (message) => {
         this._setTaskSpinningState(true);
 
@@ -45,25 +60,52 @@ export default class Scheduler extends Component {
         }));
     }
 
+    _removeTask = async (id) => {
+
+        this._setTaskSpinningState(true); 
+
+        await delay(1000);
+
+        this.setState({
+            tasks: this.state.tasks.filter((task) => task.id !== id), 
+            isTaskSpinning: false, 
+        });
+    }
+
     _updateMessage = (event) => {
         this.setState({
             message: event.target.value,
         });
     }
 
-    _submitMessage = (event) => {
+    _handleTaskSubmit = (event) => {
         event.preventDefault();
+        this._submitMessage();
+    }
+
+    _submitMessage = async () => {
         const { message } = this.state;
 
         if (!message) {
             return null;
         }
 
-        this.props._createTask(message);
+        await delay(1200);
+
+        this._createTask(message);
 
         this.setState({
             message: '',
         });
+    }
+
+    _submitOnEnter = (event) => {
+        const enterKey = event.key === 'Enter';
+
+        if (enterKey) {
+            event.preventDefault();
+            this._submitMessage();
+        }
     }
 
     render () {
@@ -71,7 +113,7 @@ export default class Scheduler extends Component {
         const { tasks, isTaskSpinning } = this.state;
 
         const tasksJSX = tasks.map((task) => {
-            return <Task key = { task.id } { ...tasks } />
+            return <Task key = { task.id } { ...task } _removeTask = { this._removeTask } />
         })
 
         return (
@@ -83,8 +125,8 @@ export default class Scheduler extends Component {
                         <input placeholder="Find" type="Search"/>
                     </header>
                     <section>
-                        <form onSubmit = { this._submitMessage }>
-                            <input onChange = { this._updateMessage }  maxLength = "50" placeholder = "Description new task" type = "text"></input>
+                        <form onSubmit = { this._handleTaskSubmit }>
+                            <input onChange = { this._updateMessage } onKeyPress = { this._submitOnEnter }  maxLength = "50" placeholder = "Description new task" type = "text"></input>
                             <button>Add task</button>
                         </form>
                         <div>
