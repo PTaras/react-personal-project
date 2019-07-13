@@ -47,6 +47,7 @@ export default class Scheduler extends Component {
 
         const task = {
             id:          v4(),
+            created: moment.utc(),
             completed:  false,
             favorite:   false,
             message,
@@ -55,7 +56,7 @@ export default class Scheduler extends Component {
         await delay(1200);
 
         this.setState(({ tasks }) => ({
-            posts:          [task, ...tasks],
+            tasks:          [task, ...tasks],
             isTaskSpinning: false,
         }));
     }
@@ -110,7 +111,7 @@ export default class Scheduler extends Component {
 
     render () {
 
-        const { tasks, isTaskSpinning } = this.state;
+        const { tasks, isTaskSpinning, message } = this.state;
 
         const tasksJSX = tasks.map((task) => {
             return <Task key = { task.id } { ...task } _removeTask = { this._removeTask } />
@@ -126,7 +127,12 @@ export default class Scheduler extends Component {
                     </header>
                     <section>
                         <form onSubmit = { this._handleTaskSubmit }>
-                            <input onChange = { this._updateMessage } onKeyPress = { this._submitOnEnter }  maxLength = "50" placeholder = "Description new task" type = "text"></input>
+                            <input onChange = { this._updateMessage } 
+                                   onKeyPress = { this._submitOnEnter } 
+                                   value = { message } 
+                                   maxLength = "50" placeholder = "Description new task" 
+                                   type = "text">
+                            </input>
                             <button>Add task</button>
                         </form>
                         <div>
@@ -138,7 +144,7 @@ export default class Scheduler extends Component {
                             </ul>
                         </div>
                     </section>
-                        {tasksJSX}
+                        {/* {tasksJSX} */}
                     <footer>
                         <div><Checkbox /></div>
                         <span className = { Styles.completeAllTasks }>All tasks complited!</span>
