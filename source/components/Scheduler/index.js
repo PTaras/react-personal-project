@@ -114,7 +114,7 @@ export default class Scheduler extends Component {
         const { tasks, isTaskSpinning, message } = this.state;
 
         const tasksJSX = tasks.map((task) => {
-            return <Task key = { task.id } { ...task } _removeTask = { this._removeTask } />
+            return <Task key = { task.id } { ...task } _removeTask = { this._removeTask } value = {message}/>
         })
 
         return (
@@ -138,13 +138,12 @@ export default class Scheduler extends Component {
                         <div>
                             <ul>
                                  <div>
-                                    <Task />
+                                    <Task onChange = { this._updateMessage } />
                                     {tasksJSX}
                                 </div>
                             </ul>
                         </div>
                     </section>
-                        {/* {tasksJSX} */}
                     <footer>
                         <div><Checkbox /></div>
                         <span className = { Styles.completeAllTasks }>All tasks complited!</span>
