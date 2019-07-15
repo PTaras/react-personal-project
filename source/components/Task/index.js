@@ -28,9 +28,8 @@ export default class Task extends PureComponent {
     });
     
     state = {
-        tasks: [],
-        // message: '',
         disabled: true,
+        message: '',
        };
 
     _removeTask = () => {
@@ -40,15 +39,22 @@ export default class Task extends PureComponent {
     }
 
     _updateTask = () => {
-        this.setState({
-            disabled: false,
-         });
-      }
+        event.preventDefault();
+        this.setState(({ disabled }) => ({
+            disabled: !disabled,
+        }));
+    };
+
+    _updateMessage = () => {
+        const { _updateMessage, event} = this.props;
+
+        _updateMessage(event);
+    }
 
     render () {
 
-         const { message, disabled} = this.state;
-         const { created } = this.props;
+         const { disabled } = this.state;
+         const { created, message } = this.props;
 
         return (
             <li className = { Styles.task }>
@@ -56,7 +62,7 @@ export default class Task extends PureComponent {
                 <div className = { Styles.toggleTaskCompletedState } ><Checkbox/></div>
                 <input disabled={disabled} maxLength = "50" 
                            type = "text" 
-                           onChange = { this._updateTaskMessage } 
+                           onChange = { this._updateMessage } 
                            value = {message}
                 />
                 <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
@@ -64,7 +70,9 @@ export default class Task extends PureComponent {
             </div>
             <div className = { Styles.actions }>
                 <div className = { Styles.toggleTaskFavoriteState } ><Star /></div>
-                <div className = { Styles.updateTaskMessageOnClick }><Edit onClick = {this._updateTask}/></div>
+                <div className = { Styles.updateTaskMessageOnClick }>
+                    <Edit onClick = {this._updateTask} />
+                </div>
                 <Remove onClick = { this._removeTask } />
             </div>
         </li>
