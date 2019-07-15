@@ -32,10 +32,10 @@ export default class Task extends PureComponent {
         message: '',
        };
 
-    _removeTask = () => {
-        const { _removeTask, id } = this.props;
+    _removeTaskAsync = () => {
+        const { _removeTaskAsync, id } = this.props;
 
-        _removeTask(id);
+        _removeTaskAsync(id);
     }
 
     _updateTask = () => {
@@ -45,10 +45,16 @@ export default class Task extends PureComponent {
         }));
     };
 
-    _updateMessage = () => {
-        const { _updateMessage, event} = this.props;
+    _updateNewTaskMessage = () => {
+        this.setState({
+            message: event.target.value,
+        });
+    }
 
-        _updateMessage(event);
+    _updateTask = () => {
+        this.setState({
+            message: '',
+        });
     }
 
     render () {
@@ -62,7 +68,7 @@ export default class Task extends PureComponent {
                 <div className = { Styles.toggleTaskCompletedState } ><Checkbox/></div>
                 <input disabled={disabled} maxLength = "50" 
                            type = "text" 
-                           onChange = { this._updateMessage } 
+                           onChange = { this._updateTask2 }
                            value = {message}
                 />
                 <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
@@ -73,7 +79,7 @@ export default class Task extends PureComponent {
                 <div className = { Styles.updateTaskMessageOnClick }>
                     <Edit onClick = {this._updateTask} />
                 </div>
-                <Remove onClick = { this._removeTask } />
+                <Remove onClick = { this._removeTaskAsync } />
             </div>
         </li>
         );
