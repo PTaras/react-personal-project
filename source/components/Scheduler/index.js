@@ -73,7 +73,7 @@ export default class Scheduler extends Component {
         });
     }
 
-    _updateMessageAsync = (event) => {
+    _updateTaskAsync = (event) => {
         this.setState({
             message: event.target.value,
         });
@@ -115,9 +115,9 @@ export default class Scheduler extends Component {
 
         const tasksJSX = tasks.map((task) => {
             return <Task key = { task.id } { ...task } 
-                        _updateMessageAsync = {this._updateMessageAsync} 
+                        _updateTaskAsync = {this._updateTaskAsync} 
                         _removeTaskAsync = { this._removeTaskAsync } 
-                        // value = {message}
+                        value = {message}
                         />
         })
 
@@ -131,7 +131,7 @@ export default class Scheduler extends Component {
                     </header>
                     <section>
                         <form onSubmit = { this._handleTaskSubmit }>
-                            <input onChange = { this._updateMessageAsync } 
+                            <input onChange = { this._updateTaskAsync } 
                                    onKeyPress = { this._submitOnEnter } 
                                    value = { message } 
                                    maxLength = "50" placeholder = "Description new task" 
