@@ -30,6 +30,7 @@ export default class Task extends PureComponent {
     state = {
         disabled: true,
         newMessage: '',
+        valid: false,
        };
 
     _removeTaskAsync = () => {
@@ -51,17 +52,12 @@ export default class Task extends PureComponent {
         _updateMessageAsync(id);
     }
 
-    _newTaskMessage = () => {
-        const { message } = this.props;
-
-        this.setState({
-            newMessage: message,
-        });
-    }
-
-    _updateNewTaskMessage = () => {
-        this.setState({
-            newMessage: event.target.value,
+    _updateNewTaskMessage = (event) => {
+        const { newMessage } = event.target.value;
+        this.setState(() => {
+            return {
+                newMessage,
+            };
         });
     }
 
@@ -74,31 +70,45 @@ export default class Task extends PureComponent {
         });
     }
 
+    _updateTaskMessageOnClick = () => {
+        event.preventDefault();
+        this._updateTask();
+
+        if (!newMessage) {
+            return null;
+        }
+
+        setState({
+            isTaskEditing: true,
+        });
+    }
+
     render () {
 
          const { disabled } = this.state;
          const { created, message, } = this.props;
 
         return (
-            <li className = { Styles.task }>
-            <div className = { Styles.content }>
-                <div className = { Styles.toggleTaskCompletedState } ><Checkbox/></div>
-                <input disabled={disabled} maxLength = "50" 
-                           type = "text" 
-                           onChange = { this._updateTask }
-                           value = {message}
-                />
-                <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
-                </time>
-            </div>
-            <div className = { Styles.actions }>
-                <div className = { Styles.toggleTaskFavoriteState } ><Star /></div>
-                <div className = { Styles.updateTaskMessageOnClick }>
-                    <Edit onClick = {this._updateTask1} />
+            <li className = { Styles.task } >
+                <div className = { Styles.content }>
+                    <Checkbox className = { Styles.toggleTaskCompletedState }/>
+                    <input disabled={disabled} maxLength = "50" 
+                            type = "text" 
+                            onChange = { this._updateNewTaskMessage }
+                            value = {message}
+                            onClick = {this._updateTaskMessageOnClick}
+                    />
+                    <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
+                    </time>
                 </div>
-                <Remove onClick = { this._removeTaskAsync } />
-            </div>
-        </li>
+                <div className = { Styles.actions }>
+                    <div className = { Styles.toggleTaskFavoriteState } ><Star /></div>
+                    <div className = { Styles.updateTaskMessageOnClick }>
+                        <Edit onClick = {this._updateTask1} />
+                    </div>
+                    <Remove onClick = { this._removeTaskAsync } />
+                </div>
+            </li>
         );
     }
 }

@@ -19,6 +19,7 @@ export default class Scheduler extends Component {
     state = {
          tasks: [],
          message: '',
+         completed: false,
         };
 
     _setTaskSpinningState = (state) => {
@@ -48,8 +49,8 @@ export default class Scheduler extends Component {
         const task = {
             id:          v4(),
             created: moment.utc(),
-            completed:  false,
-            favorite:   false,
+            completed:  true,
+            favorite:   true,
             message,
         };
 
@@ -109,6 +110,24 @@ export default class Scheduler extends Component {
         }
     }
 
+    _completedTasks = () => {
+        this.setState({ 
+            completed: true,
+        });
+    };
+
+    _getAllCompleted = async (completed) => {
+
+        this._setTaskSpinningState(true); 
+
+        await delay(1000);
+
+        this.setState({
+            tasks: this.state.tasks.map((task) => task.completed === completed), 
+            isTaskSpinning: false, 
+        });
+    }
+
     render () {
 
         const { tasks, isTaskSpinning, message } = this.state;
@@ -117,7 +136,7 @@ export default class Scheduler extends Component {
             return <Task key = { task.id } { ...task } 
                         _updateTaskAsync = {this._updateTaskAsync} 
                         _removeTaskAsync = { this._removeTaskAsync } 
-                        value = {message}
+                        value = {event}
                         />
         })
 
@@ -141,14 +160,14 @@ export default class Scheduler extends Component {
                         </form>
                         <div>
                             <ul>
-                                 <div>
+                                <div>
                                     {tasksJSX}
                                 </div>
                             </ul>
                         </div>
                     </section>
                     <footer>
-                        <div><Checkbox /></div>
+                        <Checkbox className = { Styles.toggleTaskCompletedState } onClick = {this._completedTasks}/>
                         <span className = { Styles.completeAllTasks }>All tasks complited!</span>
                     </footer>
                 </main>
