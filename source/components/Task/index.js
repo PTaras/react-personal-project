@@ -53,10 +53,10 @@ export default class Task extends PureComponent {
     // }
 
     _updateNewTaskMessage = (event) => {
-        const { newMessage } = event.target.value;
+        const { value } = event.target;
         this.setState(() => {
             return {
-                newMessage,
+                newMessage: value,
             };
         });
     }
@@ -83,10 +83,24 @@ export default class Task extends PureComponent {
         });
     }
 
+    // _toggleTaskCompletedState = () => {
+    //     const { _updateTaskAsync, id} = this.props;
+    //     this.setState(({ completed }) => ({
+    //         completed: !completed,
+    //     }));
+    // }
+
+    // _toggleTaskFavoriteState = () => {
+    //     const { _updateTaskAsync, id} = this.props;
+    //     this.setState(({ favorite }) => ({
+    //         favorite: !favorite,
+    //     }));
+    // }
+
     render () {
 
-         const { disabled } = this.state;
-         const { created, message, } = this.props;
+         const { disabled, newMessage } = this.state;
+         const { created } = this.props;
 
         return (
             <li className = { Styles.task } >
@@ -95,7 +109,7 @@ export default class Task extends PureComponent {
                     <input disabled={disabled} maxLength = "50" 
                             type = "text" 
                             onChange = { this._updateNewTaskMessage }
-                            value = {message}
+                            value = {newMessage}
                     />
                     <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
                     </time>

@@ -1,7 +1,6 @@
 // Core
 import React, { Component, useContext }from 'react';
 import { v4 } from 'uuid';
-import moment from 'moment';
 
 //Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -22,6 +21,10 @@ export default class Scheduler extends Component {
          completed: false,
         };
 
+    componentDidMount () {
+        this._fetchTaskAsync();
+    }
+
     _setTaskSpinningState = (state) => {
         this.setState({
         isTaskSpinning: state,
@@ -32,7 +35,7 @@ export default class Scheduler extends Component {
         this._setTaskSpinningState(true);
 
         const response = await fetch(api, {
-            method: 'GET',
+            method: 'GET'
         });
 
         const { data: tasks } = await response.json();
@@ -46,15 +49,15 @@ export default class Scheduler extends Component {
     _createTaskAsync = async (message) => {
         this._setTaskSpinningState(true);
 
-        const task = {
-            id:          v4(),
-            created: moment.utc(),
-            completed:  true,
-            favorite:   true,
-            message,
-        };
+        const response = await fetch(api, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+        });
 
-        await delay(1200);
+        const { data: task } = await response.json();
 
         this.setState(({ tasks }) => ({
             tasks:          [task, ...tasks],
@@ -63,10 +66,14 @@ export default class Scheduler extends Component {
     }
 
     _removeTaskAsync = async (id) => {
-
         this._setTaskSpinningState(true); 
 
-        await delay(1000);
+        await fetch(`${api}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': TOKEN,
+            },
+        });
 
         this.setState({
             tasks: this.state.tasks.filter((task) => task.id !== id), 
