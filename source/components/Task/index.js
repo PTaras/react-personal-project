@@ -39,18 +39,18 @@ export default class Task extends PureComponent {
         _removeTaskAsync(id);
     }
 
-    _updateTask1 = () => {
+    _editTask = () => {
         event.preventDefault();
         this.setState(({ disabled }) => ({
             disabled: !disabled,
         }));
     };
 
-    _updateMessageAsync = () => {
-        const { _updateMessageAsync, id} = this.props;
+    // _updateMessageAsync = () => {
+    //     const { _updateMessageAsync, id} = this.props;
 
-        _updateMessageAsync(id);
-    }
+    //     _updateMessageAsync(id);
+    // }
 
     _updateNewTaskMessage = (event) => {
         const { newMessage } = event.target.value;
@@ -62,7 +62,7 @@ export default class Task extends PureComponent {
     }
 
     _updateTask = () => {
-        const { _updateTaskAsync, id} = this.props;
+        const { _updateTaskAsync, id} = this.state;
         _updateTaskAsync(id);
 
         this.setState({
@@ -96,7 +96,6 @@ export default class Task extends PureComponent {
                             type = "text" 
                             onChange = { this._updateNewTaskMessage }
                             value = {message}
-                            onClick = {this._updateTaskMessageOnClick}
                     />
                     <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} >
                     </time>
@@ -104,7 +103,7 @@ export default class Task extends PureComponent {
                 <div className = { Styles.actions }>
                     <div className = { Styles.toggleTaskFavoriteState } ><Star /></div>
                     <div className = { Styles.updateTaskMessageOnClick }>
-                        <Edit onClick = {this._updateTask1} />
+                        <Edit onClick = {this._editTask} />
                     </div>
                     <Remove onClick = { this._removeTaskAsync } />
                 </div>
