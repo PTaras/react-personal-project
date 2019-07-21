@@ -1,17 +1,17 @@
 // Core
-import React, { Component, useContext }from 'react';
-import { v4 } from 'uuid';
+import React, { Component }from 'react';  
 
 //Components
 import { withProfile } from 'components/HOC/withProfile';
 import Spinner from 'components/Spinner';
 import Task from '../Task';
 import Checkbox from 'theme/assets/Checkbox';
+import Catcher from 'components/Catcher';
 
 // Instruments
 import Styles from './styles.m.css';
 import { delay } from 'instruments';
-import { api } from '../../REST'; // ! Импорт модуля API должен иметь именно такой вид (import { api } from '../../REST')
+import { api, TOKEN } from '../../REST'; // ! Импорт модуля API должен иметь именно такой вид (import { api } from '../../REST')
 @withProfile
 export default class Scheduler extends Component {
 
@@ -19,6 +19,7 @@ export default class Scheduler extends Component {
          tasks: [],
          message: '',
          completed: false,
+         favorite: false,
         };
 
     componentDidMount () {
@@ -53,6 +54,7 @@ export default class Scheduler extends Component {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: TOKEN
             },
             body: JSON.stringify({ message }),
         });
@@ -137,15 +139,20 @@ export default class Scheduler extends Component {
 
     render () {
 
-        const { tasks, isTaskSpinning, message } = this.state;
+        const { tasks, isTaskSpinning, message, completed } = this.state;
 
         const tasksJSX = tasks.map((task) => {
-            return <Task key = { task.id } { ...task } 
+            return (
+                <Catcher key = { task.id }>
+                    <Task 
+                        { ...task } 
                         _updateTaskAsync = {this._updateTaskAsync} 
                         _removeTaskAsync = { this._removeTaskAsync } 
                         value = {event}
                         />
-        })
+                </Catcher>
+            );
+        });
 
         return (
             <section className = { Styles.scheduler }>
@@ -160,7 +167,8 @@ export default class Scheduler extends Component {
                             <input onChange = { this._updateTaskAsync } 
                                    onKeyPress = { this._submitOnEnter } 
                                    value = { message } 
-                                   maxLength = "50" placeholder = "Description new task" 
+                                   maxLength = "50" 
+                                   placeholder = "Description new task" 
                                    type = "text">
                             </input>
                             <button>Add task</button>
@@ -174,7 +182,8 @@ export default class Scheduler extends Component {
                         </div>
                     </section>
                     <footer>
-                        <Checkbox className = { Styles.toggleTaskCompletedState } onClick = {this._completedTasks}/>
+                        <Checkbox className = { Styles.toggleTaskCompletedState } 
+                                  completed = { completed } />
                         <span className = { Styles.completeAllTasks }>All tasks complited!</span>
                     </footer>
                 </main>

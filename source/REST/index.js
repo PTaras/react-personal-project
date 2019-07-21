@@ -1,2 +1,5 @@
 export { MAIN_URL, TOKEN } from './config';
-export { api } from './api';
+
+const api = 'https://lab.lectrum.io/hw/todo/api';
+
+export { api };
