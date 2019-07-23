@@ -1,6 +1,5 @@
 // Core
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 
 // Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -30,10 +29,9 @@ export default class Task extends PureComponent {
     state = {
         disabled: true,
         newMessage: '',
-        valid: false,
        };
 
-    _removeTaskAsync = () => {
+    _removeTask = () => {
         const { _removeTaskAsync, id } = this.props;
 
         _removeTaskAsync(id);
@@ -84,45 +82,45 @@ export default class Task extends PureComponent {
     }
 
     _toggleTaskCompletedState = () => {
-        event.preventDefault();
-        this.setState(({ completed }) => ({
-            disabled: !completed,
-        }));
+        const { _updateTaskAsync, ...task} = this.props;
+
+        _updateTaskAsync(task);
+        this._getTaskShape();
+
+        this.setState({
+            completed: !task.completed,
+        });
     }
 
-    _toggleTaskFavoriteState = () => {
-        event.preventDefault();
-        this.setState(({ favorite }) => ({
-            favorite: !favorite,
-        }));
-    }
+    // _toggleTaskFavoriteState = () => {
+        
+    // }
 
     render () {
 
-         const { disabled, newMessage, completed, favorite } = this.state;
-         const { created } = this.props;
+        const { disabled, newMessage } = this.state;
 
         return (
             <li className = { Styles.task } >
                 <div className = { Styles.content }>
-                    <Checkbox className = { Styles.toggleTaskCompletedState } completed = { completed } />
+                    <Checkbox className = { Styles.toggleTaskCompletedState } 
+                              onClick = { this._toggleTaskCompletedState } />
                     <input disabled = { disabled } 
                            maxLength = "50" 
                            type = "text" 
                            onChange = { this._updateNewTaskMessage }
-                           value = {newMessage}
+                           value = { newMessage }
                     />
-                    <time dateTime = {moment.unix(created).format('MMMM DD hh:mm:ss')} ></time>
                 </div>
                 <div className = { Styles.actions }>
-                    <div className = { Styles.toggleTaskFavoriteState } 
-                         favorite={ favorite } >
-                         <Star />
-                    </div>
-                    <div className = { Styles.updateTaskMessageOnClick }>
-                        <Edit onClick = {this._editTask} />
-                    </div>
-                    <Remove onClick = { this._removeTaskAsync } />
+                    <Star 
+                        className = { Styles.toggleTaskFavoriteState }
+                        />
+                    <Edit 
+                        className = { Styles.updateTaskMessageOnClick } 
+                        onClick = { this._editTask } 
+                         />
+                    <Remove onClick = { this._removeTask } />
                 </div>
             </li>
         );

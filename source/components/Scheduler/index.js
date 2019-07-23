@@ -19,7 +19,6 @@ export default class Scheduler extends Component {
          tasks: [],
          message: '',
          completed: false,
-         favorite: false,
         };
 
     componentDidMount () {
@@ -36,7 +35,11 @@ export default class Scheduler extends Component {
         this._setTaskSpinningState(true);
 
         const response = await fetch(api, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: TOKEN
+            },
         });
 
         const { data: tasks } = await response.json();
