@@ -82,19 +82,20 @@ export default class Task extends PureComponent {
     }
 
     _toggleTaskCompletedState = () => {
-        const { _updateTaskAsync, ...task} = this.props;
-
-        _updateTaskAsync(task);
-        this._getTaskShape();
-
-        this.setState({
-            completed: !task.completed,
-        });
-    }
-
-    // _toggleTaskFavoriteState = () => {
+        const { _updateTaskAsync, completed } = this.props;
         
-    // }
+        const complitedTask = this._getTaskShape({ completed: !completed });
+
+        _updateTaskAsync(complitedTask);
+    };
+
+    _toggleTaskFavoriteState = () => {
+        const { _updateTaskAsync, favorite } = this.props;
+        
+        const favoriteTask = this._getTaskShape({ favorite: !favorite });
+
+        _updateTaskAsync(favoriteTask);
+    };
 
     render () {
 
@@ -115,6 +116,7 @@ export default class Task extends PureComponent {
                 <div className = { Styles.actions }>
                     <Star 
                         className = { Styles.toggleTaskFavoriteState }
+                        onClick = { this._toggleTaskFavoriteState }
                         />
                     <Edit 
                         className = { Styles.updateTaskMessageOnClick } 
