@@ -28,8 +28,9 @@ export default class Task extends PureComponent {
     
     state = {
         disabled: true,
-        newMessage: '',
-       };
+        newMessage: this.props.message,
+        favorite: this.props.favorite,
+      };
 
     _removeTask = () => {
         const { _removeTaskAsync, id } = this.props;
